@@ -50,7 +50,7 @@ router.post('/customer/login',async (req,res)=>{
 });
 
 
-router.post('/customer/nearby',verify,(req,res)=>{
+router.get('/customer/nearby',verify,(req,res)=>{
 connection.query('select * FROM ( SELECT  name,3956 * ACOS(COS(RADIANS(32.867073)) * COS(RADIANS(`latitude`)) * COS(RADIANS(-96.769410) - RADIANS(`longitude`)) + SIN(RADIANS(32.867073)) * SIN(RADIANS(`latitude`))) AS `distance`FROM sps WHERE latitude  BETWEEN 32.867073 - (5 / 69)  AND 32.867073 + (5 / 69) AND `longitude`  BETWEEN -96.769410 - (5 / (69 * COS(RADIANS(32.867073))))   AND -96.769410 + (5 / (69* COS(RADIANS(32.867073))))) sps WHERE `distance` < 5;',(err,results)=>{
     res.send(results);
 })
@@ -68,7 +68,7 @@ router.put('/customer/update',verify,(req,res)=>{
 })
 
 
-router.post('/customer/logout',async (req,res)=>{
+router.get('/customer/logout',(req,res)=>{
     jwt.destroy(req.user);
 })
 
@@ -107,9 +107,12 @@ router.put('/sp/update',verify,(req,res)=>{
 })
 
 
-router.post('/sp/logout',async (req,res)=>{
+router.get('/sp/logout',(req,res)=>{
     jwt.destroy(req.user);
 })
+
+
+//********************************ADMIN***********************************
 
 
 router.post('/admin/login',async (req,res)=>{
@@ -131,9 +134,6 @@ router.post('/admin/login',async (req,res)=>{
 });
 
 
-//********************************ADMIN***********************************
-
-
 router.get('/admin/customers',verify,async (req,res)=>{
     await connection.query('select * from customers',(err,results)=>{
         res.send(results);
@@ -148,7 +148,7 @@ router.get('/admin/sps',verify,async (req,res)=>{
 })
 
 
-router.post('/admin/logout',async (req,res)=>{
+router.get('/admin/logout',async (req,res)=>{
     jwt.destroy(req.user);
 })
 
